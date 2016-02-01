@@ -9,6 +9,8 @@ Yeah. I pronounce it 'to'-'m'-'la'-'dris'.
 Incomplete and buggy. Your help and contribution are much needed :)
 
 ## Usage
+Install ```make install``` then include by ```-p tomladris```
+
 ```idris
 parseToml : String  -> SortedMap String TomlValue
 ```

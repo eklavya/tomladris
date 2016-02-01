@@ -1,7 +1,7 @@
 # tomladris
 TOML parser for Idris
 
-OMG that it poor poor choice for a project name!!
+OMG that's poor, poor choice for a project name!!
 
 Yeah. I pronounce it 'to'-'m'-'la'-'dris'.
 

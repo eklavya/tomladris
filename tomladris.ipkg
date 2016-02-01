@@ -1,5 +1,5 @@
-package Tomladris
+package tomladris
 
 opts = "-p lightyear -p contrib"
 
-
+modules = Tomladris

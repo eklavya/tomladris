@@ -3,7 +3,7 @@ all: install
 install: build
 	idris --install tomladris.ipkg
 
-build: Tomli/*.idr
+build: 
 	idris --build tomladris.ipkg
 
 clean:

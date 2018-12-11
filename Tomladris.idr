@@ -6,7 +6,7 @@ import public Lightyear
 import public Lightyear.Char
 import public Lightyear.Strings
 
-
+export
 data TomlValue =   TComment String
                  | TString String
                  | TInteger Integer
@@ -19,7 +19,7 @@ data TomlValue =   TComment String
 private
 parseComment : Parser TomlValue
 parseComment = TComment . pack <$> (char '#' *> many (noneOf "\n"))
-    
+
 
 parseNumber : Parser TomlValue
 parseNumber = (parseNum . pack) <$> many (oneOf "1234567890.eE+-")
@@ -29,7 +29,7 @@ parseNumber = (parseNum . pack) <$> many (oneOf "1234567890.eE+-")
                  (Just x) => TInteger x
                  Nothing => case parseDouble s of
                             (Just x) => TDouble x
-                            Nothing => TDouble 0.0     
+                            Nothing => TDouble 0.0
 
 
 parseTBoolean : Parser TomlValue
@@ -49,7 +49,7 @@ parseTString = (TString) <$> (quoted '\'' <|> quoted '\"')
 mutual
   parseTArray : Parser TomlValue
   parseTArray = TArray <$> (spaces *> (char '[') *>| parsePrimitives <*| (char ']'))
-  
+
   parsePrimitives : Parser (List TomlValue)
   parsePrimitives = spaces *> (sepBy1 parseNumber (char ',')) <|>|
                     (sepBy1 parseTBoolean (char ',')) <|>|
@@ -62,16 +62,16 @@ parseTableName = (TString .pack) <$> ((many endOfLine) *> spaces *> (char '[') *
 
 
 parseTKeyVal : Parser TomlValue
-parseTKeyVal = (TTableKV) <$> 
-               (parseTString <|> parseString) <*> 
-               (char '=' *> 
-               spaces *> (parseTString <|> 
-                             parseTArray <|> 
-                             parseTBoolean <|> 
+parseTKeyVal = (TTableKV) <$>
+               (parseTString <|> parseString) <*>
+               (char '=' *>
+               spaces *> (parseTString <|>
+                             parseTArray <|>
+                             parseTBoolean <|>
                              parseNumber))
   where
-    parseString = (TString . pack) <$> 
-                  (((many endOfLine) *> spaces *> many (noneOf " [=")) <|> 
+    parseString = (TString . pack) <$>
+                  (((many endOfLine) *> spaces *> many (noneOf " [=")) <|>
                   (spaces *> many (noneOf " [=")))
 
 
@@ -93,11 +93,11 @@ addKeyVal root key value m = if (length root == 0)
 foldOver : String -> (List TomlValue) -> SortedMap String TomlValue -> SortedMap String TomlValue
 foldOver root [] m = m
 foldOver root ((TString table)::xs) m = foldOver table xs m
-foldOver root ((TTableKV (TString key) value)::xs) m = foldOver root xs (addKeyVal root key value m)  
+foldOver root ((TTableKV (TString key) value)::xs) m = foldOver root xs (addKeyVal root key value m)
 
 
-public                       
-parseToml : String  -> SortedMap String TomlValue
+export
+parseToml : String -> SortedMap String TomlValue
 parseToml s = case parse (many (parseTableName <|> parseTKeyVal)) s of
-              (Right lstToml) => foldOver "" lstToml empty 
+              (Right lstToml) => foldOver "" lstToml empty
               (Left _) => empty
